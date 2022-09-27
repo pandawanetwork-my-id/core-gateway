@@ -1,0 +1,27 @@
+{
+  "name": "own-gateway",
+  "version": "1.0.0",
+  "api_version": "v1.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon"
+  },
+  "author": "rohmanahmad",
+  "license": "ISC",
+  "dependencies": {
+    "@peculiar/webcrypto": "^1.4.0",
+    "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express-rate-limit": "^6.5.1",
+    "form-data": "^4.0.0",
+    "formidable": "^2.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash.isobject": "^3.0.2",
+    "lodash.result": "^4.5.2",
+    "md5": "^2.3.0",
+    "redis": "^4.3.0",
+    "uuid": "^8.3.2"
+  }
+}

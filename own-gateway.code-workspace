@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../microservices"
+		},
+		{
+			"path": "../my-libraries"
+		},
+		{
+			"path": "../dashboard"
+		},
+		{
+			"path": "../core-server"
+		}
+	],
+	"settings": {}
+}

@@ -1,0 +1,26 @@
+[
+    {
+        "client_id": "login",
+        "http_scheme": "http",
+        "domain": "microservice.account.localhost:4001",
+        "app-key": "blablabla",
+        "middlewares": [
+        ]
+    },
+    {
+        "client_id": "30",
+        "http_scheme": "http",
+        "domain": "localhost:3000",
+        "middlewares": [
+            "rate-limit"
+        ]
+    },
+    {
+        "client_id": "31",
+        "http_scheme": "http",
+        "domain": "localhost:3000",
+        "middlewares": [
+            "rate-limit"
+        ]
+    }
+]
