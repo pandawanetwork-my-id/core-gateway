@@ -15,7 +15,7 @@ routes.push({
 controllers.DashboardGatewayList = async ({ request, response, next, helpers, config, plugins}) => {
     try {
         const { clientIds, sorts } = request.query
-        const { GatewayRoutes } = plugins.mongoDBModels
+        const { GatewayRoutes } = plugins.model.mongodb
         const { gatewayConfig } = config || {}
         let criteria = { routeStatus: 1 }
         if (clientIds && clientIds.length > 0) {

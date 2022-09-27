@@ -16,7 +16,7 @@ controllers.DashboardGatewayDelete = async ({ request, response, next, helpers, 
     try {
         const { adminUser } = request.authInfo
         const { clientId, dataId } = request.body
-        const { GatewayRoutes } = plugins.mongoDBModels
+        const { GatewayRoutes } = plugins.model.mongodb
         const ObjectId = GatewayRoutes.base.mongoose.mongo.ObjectId
         const payloadData = {
             routeStatus: 0, // active

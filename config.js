@@ -23,15 +23,6 @@ module.exports = {
             2: 'Pending'
         }
     },
-    // Dependencies Installed
-    dependencies: {
-        uuid: require('uuid'),
-        md5: require('md5'),
-        lodashResult: require('lodash.result'),
-        lodashIsObject: require('lodash.isobject'),
-        redis: require('redis'),
-        jwt: require('jsonwebtoken')
-    },
     // mysql connection config
     mysqlConnection: {
         dsn : process.env.MYSQL_DSN,

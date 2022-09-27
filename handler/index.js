@@ -5,7 +5,7 @@ const gatewayModule = require('./modules/gateway')
 const clientsModule = require('./modules/clients')
 
 const middlewares = require('./middlewares/index')
-const globalMiddlewares = require('./middlewares/globalMiddleware')
+const globalMiddlewares = require('./middlewares/global-middleware')
 
 let controllers = {
     ...dashboardModule.controllers,

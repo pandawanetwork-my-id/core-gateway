@@ -13,7 +13,7 @@ routes.push({
 controllers.GetClients = async ({request: req, response: res, next, helpers, config, plugins}) => {
     try {
         const { search, q, keys, sorts, limit, page } = req.query || {}
-        const { RippleClients } = plugins.mysqlModels
+        const { RippleClients } = plugins.model.mysql
         const { operators } = RippleClients
         let opts = {}
         opts['attributes'] = ['client_id', 'client_name']

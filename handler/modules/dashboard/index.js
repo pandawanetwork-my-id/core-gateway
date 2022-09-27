@@ -1,13 +1,13 @@
 'use strict'
 
 const path = require('path')
-const Login = require('./APIRoutes/Login')
-const GatewayRouteCreate = require('./APIRoutes/Gateway/CreateRoute')
-const GatewayRouteUpdate = require('./APIRoutes/Gateway/UpdateRoute')
-const GatewayRouteDelete = require('./APIRoutes/Gateway/DeleteRoute')
-const GatewayRouteActivate = require('./APIRoutes/Gateway/ActivateRoute')
-const GatewayRouteDeactivate = require('./APIRoutes/Gateway/DeactivateRoute')
-const GatewayRouteList = require('./APIRoutes/Gateway/ListRoute')
+const Login = require('./api-routes/login')
+const GatewayRouteCreate = require('./api-routes/gateway/create-route')
+const GatewayRouteUpdate = require('./api-routes/gateway/update-route')
+const GatewayRouteDelete = require('./api-routes/gateway/delete-route')
+const GatewayRouteActivate = require('./api-routes/gateway/activate-route')
+const GatewayRouteDeactivate = require('./api-routes/gateway/deactivate-route')
+const GatewayRouteList = require('./api-routes/gateway/list-route')
 
 const routes = [
     ...Login.routes,

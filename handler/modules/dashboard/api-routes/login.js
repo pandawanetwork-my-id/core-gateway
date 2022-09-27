@@ -1,5 +1,7 @@
 'use strict'
 
+const jwt = require('jsonwebtoken')
+
 let routes = []
 let controllers = {}
 
@@ -21,8 +23,7 @@ controllers.DashboardLogin = async ({request, response, next, helpers, config, p
     try {
         const { crypto } = helpers
         const { AppKey, SessionExpires } = config
-        const { AdminAccounts } = plugins.mongoDBModels
-        const { jwt } = config.dependencies
+        const { AdminAccounts } = plugins.model.mongodb
         const { username, email, password } = request.body
         const decryptedPass = await crypto.decrypt(password)
         const accountData = await AdminAccounts.findOne({$or: [{username}, {email}], password: decryptedPass})

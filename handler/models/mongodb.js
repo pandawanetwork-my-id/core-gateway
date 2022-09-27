@@ -1,4 +1,4 @@
 module.exports = {
-    AdminAccounts: require('./components/mongodb/AdminAccountsModel'),
-    GatewayRoutes: require('./components/mongodb/GatewayRoutesModel')
+    AdminAccounts: require('./components/mongodb/admin-accounts'),
+    GatewayRoutes: require('./components/mongodb/gateway-routes')
 }

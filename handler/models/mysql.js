@@ -1,5 +1,5 @@
-const RippleClients = require('./components/mysql/RippleClientsModel')
-const RippleClientKeyword = require('./components/mysql/RippleClientKeywordModel')
+const RippleClients = require('./components/mysql/ripple-clients')
+const RippleClientKeyword = require('./components/mysql/ripple-client-keyword')
 
 
 module.exports = {
