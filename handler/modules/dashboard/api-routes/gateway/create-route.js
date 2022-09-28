@@ -15,8 +15,8 @@ routes.push({
 controllers.DashboardGatewayCreate = async ({ request, response, next, helpers, plugins}) => {
     try {
         const { adminUser } = request.authInfo
-        const { clientId, httpScheme, domain, apiKey } = request.body
-        const { GatewayRoutes } = plugins.mongoDBModels
+        const { clientId, httpScheme, domain, apiKey, middlewares='' } = request.body
+        const { GatewayRoutes } = plugins.model.mongodb
         const payloadData = {
             clientId,
             httpScheme,
@@ -29,6 +29,10 @@ controllers.DashboardGatewayCreate = async ({ request, response, next, helpers, 
             updatedAt: null,
             updatedBy: null,
         }
+        if (middlewares) payloadData.middlewares = middlewares.split(',').map(x => x.trim())
+        // check existing route with this clientid
+        const isExistingRoute = await GatewayRoutes.findOne({ clientId })
+        if (isExistingRoute) throw new Error('Client Route Already Exists!')
         const x = await GatewayRoutes.create(payloadData)
         response.send({
             code: 200,

@@ -26,21 +26,22 @@ class MysqlConnection {
 }
 
 class MysqlClient {
-    constructor({ dsn, debug }) {
+    constructor({ dsn, debug, models }) {
         this.connectionConfig = { dsn, debug }
+        this.models = models
     }
 
     getContext() {
         return knex
     }
 
-    async start(mysqlModels) {
+    async start() {
         try {
             const con = new MysqlConnection(this.connectionConfig).connect()
             await con.testConnection()
             let models = {}
-            for (const m in mysqlModels) {
-                models[m] = mysqlModels[m](con.ctl, {Model, DataTypes, Op})
+            for (const m in this.models) {
+                models[m] = this.models[m](con.ctl, {Model, DataTypes, Op})
                 await models[m].sync()
             }
             console.log('Mysql Connected')
