@@ -1,5 +1,6 @@
 require('dotenv').config({})
-const Server = require('../core-server')
+// const Server = require('../core-server')
+const Server = require('rohmanwebid-core-server')
 const helpers = require('./handler/helpers')
 const PluginAdapter = require('./handler/plugins/adapter')
 
