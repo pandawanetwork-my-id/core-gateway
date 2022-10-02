@@ -8,14 +8,21 @@ class RedisClient {
     }
 
     async start () {
-        const rc = redis.createClient({ url: this.dsn })
-        await rc.connect()
-        if (this.events) {
-            for (const e in this.events) {
-                rc.on(e, this.events[e])
+        try {
+            console.log('Connecting Redis Client...')
+            const rc = redis.createClient({ url: this.dsn })
+            await rc.connect()
+            if (this.events) {
+                for (const e in this.events) {
+                    rc.on(e, this.events[e])
+                }
             }
+            console.log('Redis Connected')
+            rc.ping()
+            return rc
+        } catch (err) {
+            throw err
         }
-        return rc
     }
 
     static get events () {

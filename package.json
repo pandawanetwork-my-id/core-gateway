@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "api_version": "v1.0",
   "description": "",
+  "engines": {
+    "node": "14.x"
+  },
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "start": "node server.js"
   },
   "author": "rohmanahmad",
   "license": "ISC",
@@ -21,10 +25,12 @@
     "lodash.isobject": "^3.0.2",
     "lodash.result": "^4.5.2",
     "md5": "^2.3.0",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.37",
     "mongoose": "^6.6.2",
     "mysql2": "^2.3.3",
     "redis": "^4.3.0",
-    "sequelize": "^6.23.2",
+    "sequelize": "^5.22.5",
     "uuid": "^8.3.2"
   }
 }

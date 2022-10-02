@@ -14,24 +14,18 @@ routes.push({
 
 controllers.DashboardGatewayDelete = async ({ request, response, next, helpers, plugins}) => {
     try {
-        const { adminUser } = request.authInfo
+        // const { adminUser } = request.authInfo
         const { clientId, dataId } = request.body
         const { GatewayRoutes } = plugins.model.mongodb
         const ObjectId = GatewayRoutes.base.mongoose.mongo.ObjectId
-        const payloadData = {
-            routeStatus: 0, // active
-            updatedAt: new Date().getTime(),
-            updatedBy: adminUser,
-        }
         if (!clientId && !dataId) throw new Error('Required clientId or dataId')
         let criteria = {}
         if (clientId) criteria['clientId'] = clientId
         else criteria['_id'] = ObjectId(dataId)
-        await GatewayRoutes.updateOne(criteria, { $set: payloadData })
+        await GatewayRoutes.deleteOne(criteria)
         response.send({
             code: 200,
-            message: "Success Deleted",
-            data: payloadData
+            message: "Success Deleted"
         })
     } catch (err) {
         next(err)
