@@ -6,7 +6,8 @@ const lodashResult = require('lodash.result')
 module.exports = async function (req, res, next) {
     try {
         const { AppKey } = this.config
-        const token = lodashResult(req.headers, 'authorization', '').replace('Bearer ', '').trim()
+        const headers = req.headers
+        const token = lodashResult(headers, 'authorization', '').replace('Bearer ', '').trim()
         if (token.length === 0) throw new Error('Required Credential')
         req.authInfo = jwt.verify(token, AppKey)
         next()

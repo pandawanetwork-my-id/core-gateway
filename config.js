@@ -3,6 +3,7 @@
 const { version, api_version: apiVersion } = require('./package.json')
 
 module.exports = {
+    developmentMode: (process.env.NODE_ENV || 'production').toLowerCase() !== 'production',
     AppVersion: version,
     ApiVersion: apiVersion,
     AppKey: process.env.APP_KEY,

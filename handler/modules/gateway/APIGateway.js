@@ -2,7 +2,6 @@
 
 const FormData = require('form-data')
 const formidable = require('formidable')
-const Redis = require('redis')
 const md5 = require('md5')
 const fs = require('fs')
 const axios = require('axios')
@@ -27,7 +26,7 @@ const getMultipartBody = (request) => {
     })
 }
 
-const sendRequest = async ({ method, baseURL, path, query, body, headers }) => {
+const sendRequest = async ({ method, baseURL, path, query, body, headers }, config) => {
     try {
         method = method.toLowerCase()
         let otherObjects = {}
@@ -52,6 +51,10 @@ const sendRequest = async ({ method, baseURL, path, query, body, headers }) => {
             status: response.status,
             message: response.statusText
         }
+        if (!config.developmentMode) {
+            delete formattedResponse.requestConfig
+            delete formattedResponse.headers
+        }
         return formattedResponse
     } catch (err) {
         throw err
@@ -71,8 +74,8 @@ const getRequestConfig = async (requestFromExpress, GatewayPrefixPath, redisClie
         const clientAddress = ['C', md5(clientId)].join('_').toUpperCase()
         const config = await redisClient.get(clientAddress)
         if (!config) throw new Error(`Invalid Config On Database (redis) For client: '${clientId}'`)
-        const {client_id: cId, http_scheme: scheme, domain, middlewares} = JSON.parse(config)
-        const contentType = headers['content-type']
+        const {clientId: cId, httpScheme: scheme, domain, middlewares} = JSON.parse(config)
+        const contentType = headers['content-type'] || 'application/json'
         if (contentType.indexOf('multipart/form-data') > -1) {
             body = await getMultipartBody(requestFromExpress)
             headers['content-type'] = 'multipart/form-data'
@@ -116,19 +119,20 @@ const handleNonAuth = async ({ routeName, method, path, query, body, headers }) 
     }
 }
 
-const handle = async ({request: req, response: res, next, helpers, plugins}) => {
+const handle = async ({request: req, response: res, next, config, helpers, plugins}) => {
     try {
-        const requestCtx = await getRequestConfig(req, helpers.GatewayPrefixPath, plugins.redis)
+        const requestCtx = await getRequestConfig(req, config.GatewayPrefixPath, plugins.model.redis)
         if (!requestCtx) {
             await next(new Error('Invalid Client Id'))
             return null
         }
         console.log(requestCtx)
-        const HttpResponse = await sendRequest(requestCtx)
+        const HttpResponse = await sendRequest(requestCtx, config)
         console.log('request done')
         res.send(HttpResponse)
     } catch (err) {
-        next(err)
+        const errResData = err.response.data
+        res.status(errResData.status).send(errResData)
     }
 }
 

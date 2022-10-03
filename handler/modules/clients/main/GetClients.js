@@ -32,9 +32,15 @@ controllers.GetClients = async ({request: req, response: res, next, helpers, con
         }
         if (search || q) {
             opts['where'] = {
-                'client_name': {
-                    [operators.like]: `%${search || q}%`
+                [operators.or]: {
+                    'client_name': {
+                        [operators.like]: `%${search || q}%`,
+                    },
+                    'client_id': {
+                        [operators.like]: `%${search || q}%`,
+                    }
                 }
+
             }
         }
         opts['limit'] = 10
