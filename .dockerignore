@@ -1,0 +1,12 @@
+.vscode
+.vercel
+.env
+.gitignore
+.own-gateway.code-workspace
+.own-gateway.drawio
+yarn-error.log
+README.md
+vercel.json
+yarn.lock
+LICENSE
+handler/sample-config.json

@@ -8,8 +8,13 @@ module.exports = async function (req, res, next) {
         const { AppKey } = this.config
         const headers = req.headers
         const token = lodashResult(headers, 'authorization', '').replace('Bearer ', '').trim()
-        if (token.length === 0) throw new Error('Required Credential')
-        req.authInfo = jwt.verify(token, AppKey)
+        const apiKey = headers['x-api-key']
+        if (apiKey) {
+            req.authInfo = { apiKey }
+        } else {
+            if (token.length === 0) throw new Error('Required Credential')
+            req.authInfo = jwt.verify(token, AppKey)
+        }
         next()
     } catch (err) {
         if (err && err.name === 'TokenExpiredError') next(new Error('Token Expired. Please Login Again'))
