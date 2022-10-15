@@ -23,7 +23,7 @@ controllers.DashboardGatewayCreate = async ({ request, response, next, helpers, 
             domain,
             middlewares: [],
             apiKey,
-            routeStatus: 1, // active
+            routeStatus: 0, // default in-active
             createdAt: new Date().getTime(),
             createdBy: adminUser,
             updatedAt: null,

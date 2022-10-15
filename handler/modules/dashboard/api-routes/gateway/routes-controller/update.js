@@ -23,7 +23,7 @@ controllers.DashboardGatewayUpdate = async ({ request, response, next, helpers, 
             domain,
             middlewares: [],
             apiKey,
-            routeStatus: 1, // active
+            routeStatus: 0, // active
             updatedAt: new Date().getTime(),
             updatedBy: adminUser,
         }

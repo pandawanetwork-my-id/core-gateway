@@ -19,9 +19,9 @@ module.exports = {
     GatewayPrefixPath: process.env.GATEWAY_PREFIX_PATH,
     gatewayConfig: {
         statuses: {
-            1: 'Active',
-            0: 'Trash',
-            2: 'Pending'
+            '1': 'Active',
+            '0': 'In Active',
+            '-1': 'Trash'
         }
     },
     // mysql connection config

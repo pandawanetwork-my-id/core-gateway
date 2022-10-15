@@ -20,7 +20,7 @@ controllers.DashboardGatewayActivate = async ({ request, response, next, config,
         const { adminUser } = request.authInfo
         const { clientIds } = request.body
         const { GatewayRoutes } = plugins.mongoDBModels
-        let criteria = { routeStatus: 1 }
+        let criteria = { }
         if (clientIds && clientIds.length > 0) {
             const clientsIdArray = clientIds.split(',').map(x => x.trim()).filter(x => x.length > 0)
             criteria['clientId'] = {
@@ -36,7 +36,7 @@ controllers.DashboardGatewayActivate = async ({ request, response, next, config,
         setTimeout(() => {
             response.send({
                 code: 200,
-                message: "Success Activated"
+                message: "Route Reactivated"
             })
         }, 3 * 1000)
     } catch (err) {

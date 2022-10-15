@@ -7,21 +7,21 @@ let routes = []
 
 routes.push({
     method: 'POST',
-    path: '/gateway/route/activate',
+    path: '/gateway/route/deactivate',
     middlewares: [
         'dashboard-auth'
     ],
-    controller: 'DashboardGatewayActivate'
+    controller: 'DashboardGatewayDeactivate'
 })
 
-controllers.DashboardGatewayActivate = async ({ request, response, next, config, helpers, plugins}) => {
+controllers.DashboardGatewayDeactivate = async ({ request, response, next, config, helpers, plugins}) => {
     try {
         const { RouterGatewayHelper } = helpers
         const { redis } = plugins.model
         const { adminUser } = request.authInfo
         const { clientIds } = request.body
         const { GatewayRoutes } = plugins.model.mongodb
-        let criteria = { routeStatus: 1 }
+        let criteria = { }
         if (clientIds && clientIds.length > 0) {
             const clientsIdArray = clientIds.split(',').map(x => x.trim()).filter(x => x.length > 0)
             criteria['clientId'] = {
@@ -31,13 +31,13 @@ controllers.DashboardGatewayActivate = async ({ request, response, next, config,
         const data = await GatewayRoutes.find(criteria)
         if (data) {
             RouterGatewayHelper({dependencies: {redis, md5}, adminUser})
-                .activate(data)
+                .deactivate(data)
         }
-        await GatewayRoutes.updateMany(criteria, { $set: { lastActivateBy: adminUser, lastActivateAt: new Date().getTime() } })
+        await GatewayRoutes.updateMany(criteria, { $set: { lastDeactivateBy: adminUser, lastDeactivateAt: new Date().getTime(), routeStatus: 0 } })
         setTimeout(() => {
             response.send({
                 code: 200,
-                message: "Success Activated"
+                message: "Route Deactivated"
             })
         }, 3 * 1000)
     } catch (err) {

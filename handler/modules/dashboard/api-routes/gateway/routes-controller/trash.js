@@ -5,14 +5,14 @@ let routes = []
 
 routes.push({
     method: 'POST',
-    path: '/gateway/route/delete',
+    path: '/gateway/route/trash',
     middlewares: [
         'dashboard-auth'
     ],
-    controller: 'DashboardGatewayDelete'
+    controller: 'DashboardGatewayTrash'
 })
 
-controllers.DashboardGatewayDelete = async ({ request, response, next, helpers, plugins}) => {
+controllers.DashboardGatewayTrash = async ({ request, response, next, helpers, plugins}) => {
     try {
         // const { adminUser } = request.authInfo
         const { clientId, dataId } = request.body
@@ -22,10 +22,10 @@ controllers.DashboardGatewayDelete = async ({ request, response, next, helpers, 
         let criteria = {}
         if (clientId) criteria['clientId'] = clientId
         else criteria['_id'] = ObjectId(dataId)
-        await GatewayRoutes.deleteOne(criteria)
+        await GatewayRoutes.updateOne(criteria, {$set: { routeStatus: -1 }})
         response.send({
             code: 200,
-            message: "Success Deleted"
+            message: "Success Move to Trash"
         })
     } catch (err) {
         next(err)
