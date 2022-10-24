@@ -4,11 +4,11 @@ networks:
     external: true
 services:
   backend:
-    image: 'registry.s45.in/ivo-gateway:1.0.0'
+    image: 'registry.s45.in/gateway:1.0.0'
     working_dir: '/usr/src/app'
     environment:
-      - NODE_ENV=nonproduction
-      - APP_KEY=inF0MyGatew4y
+      - NODE_ENV=production
+      - APP_KEY=CB918CC72869BD625940F42A7D8AE035C4E786D08187B94E8B91C6A534DFD
       - APP_HOST=0.0.0.0
       - APP_PORT=3000
       - SESSION_EXPIRES=1h

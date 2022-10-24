@@ -105,6 +105,7 @@ class Mongodb {
     }
 
     start() {
+        console.log('[mongodb] connecting to', this.config.dsn)
         const con = new MongodbConnection(this.config.dsn)
         con.connect(this.config.connectionOptions)
         const m = con.setupModels(this.config.models)
