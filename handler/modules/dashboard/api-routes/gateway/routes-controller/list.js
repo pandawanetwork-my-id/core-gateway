@@ -54,12 +54,14 @@ controllers.DashboardGatewayList = async ({ request, response, next, helpers, co
             x.actions = []
             if (x.routeStatus == 0) { // in-active
                 x.actions.push('edit')
-                x.actions.push('re-activate')
+                x.actions.push('activate')
                 x.actions.push('trash')
             } else if (x.routeStatus == 1) {
                 x.actions.push('deactivate')
+                x.actions.push('ping')
             } else {
                 x.actions.push('edit')
+                x.actions.push('delete')
             }
             return x
         })

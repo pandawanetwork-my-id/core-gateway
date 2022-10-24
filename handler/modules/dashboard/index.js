@@ -4,7 +4,9 @@ const path = require('path')
 const Login = require('./api-routes/login')
 const GatewayRouteCreate = require('./api-routes/gateway/routes-controller/create')
 const GatewayRouteUpdate = require('./api-routes/gateway/routes-controller/update')
-const GatewayRouteDelete = require('./api-routes/gateway/routes-controller/trash')
+const GatewayRouteTrash = require('./api-routes/gateway/routes-controller/trash')
+const GatewayRouteDelete = require('./api-routes/gateway/routes-controller/delete')
+const GatewayRoutePing = require('./api-routes/gateway/routes-controller/ping')
 const GatewayRouteActivate = require('./api-routes/gateway/routes-controller/activate')
 const GatewayRouteDeactivate = require('./api-routes/gateway/routes-controller/deactivate')
 const GatewayRouteList = require('./api-routes/gateway/routes-controller/list')
@@ -15,8 +17,10 @@ const routes = [
     ...Login.routes,
     ...GatewayRouteCreate.routes,
     ...GatewayRouteUpdate.routes,
+    ...GatewayRouteTrash.routes,
     ...GatewayRouteDelete.routes,
     ...GatewayRouteActivate.routes,
+    ...GatewayRoutePing.routes,
     ...GatewayRouteDeactivate.routes,
     ...GatewayRouteList.routes,
     // configs
@@ -36,6 +40,8 @@ module.exports = {
         ...GatewayRouteUpdate.controllers,
         ...GatewayRouteDelete.controllers,
         ...GatewayRouteActivate.controllers,
+        ...GatewayRouteTrash.controllers,
+        ...GatewayRoutePing.controllers,
         ...GatewayRouteDeactivate.controllers,
         ...GatewayRouteList.controllers,
         // configs

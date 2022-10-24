@@ -5,6 +5,11 @@ const formidable = require('formidable')
 const md5 = require('md5')
 const fs = require('fs')
 const axios = require('axios')
+const lodashResult = require('lodash.result')
+
+/* middlewares */
+const jwt = require('./middlewares/jwt')
+const gatewayMiddlewares = { 'jwt-auth': jwt }
 
 const getMultipartBody = (request) => {
     return new Promise((resolve, reject) => {
@@ -41,8 +46,8 @@ const sendRequest = async ({ method, baseURL, path, query, body, headers }, conf
             method,
             ...otherObjects
         }
-        console.log(initialConfig)
         let response = null
+        console.log(JSON.stringify(initialConfig))
         response = await axios(initialConfig)
         const formattedResponse = {
             requestConfig: initialConfig,
@@ -61,27 +66,46 @@ const sendRequest = async ({ method, baseURL, path, query, body, headers }, conf
     }
 }
 
-const getRequestConfig = async (requestFromExpress, GatewayPrefixPath, redisClient) => {
+const validateRequirements = (headers) => {
+    const clientId = headers['x-client-id']
+    const apiKey = headers['x-api-key']
+    if (!clientId) throw new Error('Invalid Client Id: ' + (clientId || 'NOT-SET'))
+    if (!apiKey) throw new Error('Invalid API Key Id: ' + (apiKey || 'NOT-SET'))
+    return { clientId, apiKey }
+}
+
+const getRequestConfig = async (requestFromExpress, config={}, redisClient, helpers) => {
     try {
+        const { GatewayPrefixPath } = config
+        const { RouterGatewayHelper } = helpers
         const method = requestFromExpress.method
         const path = (requestFromExpress.path).replace(GatewayPrefixPath, '')
         const query = requestFromExpress.query
         let body = requestFromExpress.body
         let headers = requestFromExpress.headers
+        let { clientId, apiKey: reqApiKey } = validateRequirements(headers)
         const routeName = [(method.toLowerCase()), path.replace(/\//g, '_')].join('')
-        const clientId = headers['x-client-id'] || null
-        if (!clientId) throw new Error('Invalid Client Id: ' + clientId)
-        const clientAddress = ['C', md5(clientId)].join('_').toUpperCase()
-        const config = await redisClient.get(clientAddress)
-        if (!config) throw new Error(`Invalid Config On Database (redis) For client: '${clientId}'`)
-        const {clientId: cId, httpScheme: scheme, domain, middlewares} = JSON.parse(config)
+        const clientAddress = RouterGatewayHelper().hashClient(clientId.toString())
+        const cfg = await redisClient.get(clientAddress)
+        console.log(cfg)
+        if (!cfg) throw new Error(`Config Not Found For client: ('${clientId}')`)
+        const {
+            clientId: cId,
+            httpScheme: scheme,
+            domain,
+            middlewares,
+            apiKey
+        } = JSON.parse(cfg)
+        // validate if apiKey in Redis doesn't match with headers/reqApiKey
+        if (apiKey !== reqApiKey) throw new Error('Api Key Doest\'n Match')
         const contentType = headers['content-type'] || 'application/json'
+        headers['content-type'] = contentType
         if (contentType.indexOf('multipart/form-data') > -1) {
             body = await getMultipartBody(requestFromExpress)
             headers['content-type'] = 'multipart/form-data'
-        } else {
-            headers['content-type'] = 'application/json'
         }
+        headers['r10-api-key'] = apiKey
+        headers['r10-client-id'] = cId
         const baseURL = [scheme, domain].join('://')
         return {
             clientAddress,
@@ -96,6 +120,7 @@ const getRequestConfig = async (requestFromExpress, GatewayPrefixPath, redisClie
                 cId,
                 scheme,
                 domain,
+                apiKey,
                 middlewares
             }
         }
@@ -121,18 +146,28 @@ const handleNonAuth = async ({ routeName, method, path, query, body, headers }) 
 
 const handle = async ({request: req, response: res, next, config, helpers, plugins}) => {
     try {
-        const requestCtx = await getRequestConfig(req, config.GatewayPrefixPath, plugins.model.redis)
+        const requestCtx = await getRequestConfig(req, config, plugins.model.redis, helpers)
         if (!requestCtx) {
             await next(new Error('Invalid Client Id'))
             return null
         }
-        console.log(requestCtx)
+        const { middlewares } = requestCtx.config
+        for (const m of middlewares) {
+            const middle = gatewayMiddlewares[m]
+            if (typeof middle !== 'function') throw new Error('Invalid Middleware Named: ' + m)
+            if (m === 'jwt-auth') {
+                const projectIds = await middle({req, config, helpers, plugins, routeConfig: requestCtx.config})
+                requestCtx.headers['r10-project-ids'] = projectIds
+            } else 
+                await middle({req, config, helpers, plugins, routeConfig: requestCtx.config})
+        }
         const HttpResponse = await sendRequest(requestCtx, config)
-        console.log('request done')
         res.send(HttpResponse)
     } catch (err) {
-        const errResData = err.response.data
-        res.status(errResData.status).send(errResData)
+        console.error(err)
+        const errResData = lodashResult(err, 'response.data', err.message)
+        const statusCode = lodashResult(errResData, 'status', 500)
+        res.status(statusCode).send(errResData)
     }
 }
 

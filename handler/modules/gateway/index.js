@@ -11,7 +11,7 @@ const routes = [{
     controller: 'handle'
 }]
 
-const prefix = '/gateway/v1'
+const prefix = '/g1'
 
 module.exports = {
     controllers,

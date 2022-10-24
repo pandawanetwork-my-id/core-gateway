@@ -12,7 +12,7 @@ services:
       - APP_HOST=0.0.0.0
       - APP_PORT=3000
       - SESSION_EXPIRES=1h
-      - GATEWAY_PREFIX_PATH=/gateway/v1
+      - GATEWAY_PREFIX_PATH=/g1
       - MONGODB_DSN=mongodb+srv://dbadmin:punt3n123@cluster0.qxnym.mongodb.net/api-gateway
       - MYSQL_DSN=mysql://test:punt3n123@159.65.10.9:3306/ripple10
       - REDIS_DSN=redis://default:nJDoX82MibEZUUZMLvYwjzMOdo1woGgb@redis-16149.c252.ap-southeast-1-1.ec2.cloud.redislabs.com:16149
